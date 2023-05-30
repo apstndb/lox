@@ -136,3 +136,9 @@ func EntryKey[K constraints.Ordered, V any](e lo.Entry[K, V]) K {
 func Less[T constraints.Ordered](a, b T) bool {
 	return a < b
 }
+
+func KeysSorted[K constraints.Ordered, V any](m map[K]V) []K {
+	keys := lo.Keys(m)
+	slices.Sort(keys)
+	return keys
+}
