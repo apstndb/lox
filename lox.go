@@ -86,3 +86,53 @@ func FilterWithoutIndex[V any](collection []V, predicate func(item V) bool) []V 
 func MapWithoutIndex[T, R any](collection []T, iteratee func(item T) R) []R {
 	return lo.Map(collection, IgnoreSecond[T, int, R](iteratee))
 }
+
+func InstanceOf[T any](v any) bool {
+	switch v.(type) {
+	case T:
+		return true
+	default:
+		return false
+	}
+}
+
+func FilterByType[R, T any](elems []T) []R {
+	return lo.FilterMap(elems, func(item T, index int) (R, bool) {
+		switch item := any(item).(type) {
+		case R:
+			return item, true
+		default:
+			return lo.Empty[R](), false
+		}
+	})
+}
+
+func IfInstanceOfF[T, R any](v any, ifFunc func(T) R, elseFunc func(any) R) R {
+	switch v := any(v).(type) {
+	case T:
+		return ifFunc(v)
+	default:
+		return elseFunc(v)
+	}
+}
+
+func EntriesSortedByKey[K constraints.Ordered, V any](m map[K]V) []lo.Entry[K, V] {
+	entries := lo.Entries(m)
+	SortBy(entries, EntryKey[K, V])
+	return entries
+}
+
+func ValuesSortedByKey[K constraints.Ordered, V any](m map[K]V) []V {
+	sorted := EntriesSortedByKey(m)
+	return lo.Map(sorted, func(item lo.Entry[K, V], index int) V {
+		return item.Value
+	})
+}
+
+func EntryKey[K constraints.Ordered, V any](e lo.Entry[K, V]) K {
+	return e.Key
+}
+
+func Less[T constraints.Ordered](a, b T) bool {
+	return a < b
+}
