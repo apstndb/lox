@@ -3,7 +3,7 @@ package lox
 import (
 	"github.com/samber/lo"
 	"golang.org/x/exp/constraints"
-	"golang.org/x/exp/slices"
+	"slices"
 )
 
 func MapToPredicate[K comparable, V any](m map[K]V) func(K) bool {
