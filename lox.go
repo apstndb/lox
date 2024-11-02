@@ -65,8 +65,16 @@ func IgnoreSecond[T1, T2, R any](f func(T1) R) func(T1, T2) R {
 }
 
 func SortBy[T any, R constraints.Ordered](s []T, f func(T) R) {
-	slices.SortFunc(s, func(a, b T) bool {
-		return f(a) < f(b)
+	slices.SortFunc(s, func(a, b T) int {
+		ra, rb := f(a), f(b)
+		switch {
+		case ra < rb:
+			return -1
+		case ra > rb:
+			return 1
+		default:
+			return 0
+		}
 	})
 
 }
