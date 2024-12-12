@@ -6,6 +6,10 @@ import (
 	"slices"
 )
 
+func SliceOf[T any](values ...T) []T {
+	return values
+}
+
 func MapToPredicate[K comparable, V any](m map[K]V) func(K) bool {
 	return func(v K) bool {
 		_, ok := m[v]
